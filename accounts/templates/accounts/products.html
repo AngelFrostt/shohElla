@@ -1,0 +1,102 @@
+{% extends 'accounts/base.html' %}
+
+{% block title %}Товары - Магазин{% endblock %}
+
+{% block content %}
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <h1>Наши товары</h1>
+    <div>
+        <input type="text" class="form-control" placeholder="Поиск товаров..." id="searchInput">
+    </div>
+</div>
+
+<div class="row" id="productsContainer">
+    <div class="text-center">
+        <div class="spinner-border" role="status">
+            <span class="visually-hidden">Загрузка...</span>
+        </div>
+        <p>Загружаем товары...</p>
+    </div>
+</div>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        loadProducts();
+
+        document.getElementById('searchInput').addEventListener('input', function (e) {
+            loadProducts(e.target.value);
+        });
+    });
+
+    function loadProducts(search = '') {
+        let url = '/api/products/';
+        if (search) {
+            url += `?search=${encodeURIComponent(search)}`;
+        }
+
+        fetch(url)
+            .then(response => response.json())
+            .then(products => {
+                const container = document.getElementById('productsContainer');
+                if (products.length === 0) {
+                    container.innerHTML = `
+                        <div class="col-12">
+                            <div class="alert alert-info">
+                                Товары не найдены
+                            </div>
+                        </div>
+                    `;
+                    return;
+                }
+
+                container.innerHTML = products.map(product => `
+                    <div class="col-md-4 mb-4">
+                        <div class="card h-100 shadow-sm">
+                            <img src="${product.image}" class="card-img-top" 
+                                 alt="${product.name}" style="height: 200px; object-fit: cover;">
+                            <div class="card-body d-flex flex-column">
+                                <h5 class="card-title">${product.name}</h5>
+                                <p class="card-text flex-grow-1">
+                                    ${product.description}
+                                </p>
+                                <div class="mt-auto">
+                                    <div class="d-flex justify-content-between align-items-center mb-2">
+                                        <span class="h5 text-primary">
+                                            ${parseFloat(product.price).toLocaleString('ru-RU')} ₽
+                                        </span>
+                                        <button class="btn btn-outline-primary btn-sm" 
+                                                onclick="addToCart(${product.id})">
+                                            В корзину
+                                        </button>
+                                    </div>
+                                    <div class="d-flex justify-content-between">
+                                        <small class="text-muted">
+                                            Категория: ${product.category_name}
+                                        </small>
+                                        <small class="${product.in_stock ? 'text-success' : 'text-danger'}">
+                                            ${product.in_stock ? '✓ В наличии' : '✗ Нет в наличии'}
+                                        </small>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                `).join('');
+            })
+            .catch(error => {
+                console.error('Ошибка:', error);
+                document.getElementById('productsContainer').innerHTML = `
+                    <div class="col-12">
+                        <div class="alert alert-danger">
+                            Ошибка загрузки товаров
+                        </div>
+                    </div>
+                `;
+            });
+    }
+
+    function addToCart(productId) {
+        alert('Товар добавлен в корзину!');
+    }
+</script>
+{% endblock %}

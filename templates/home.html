@@ -1,0 +1,53 @@
+<div class="row">
+    {% for product in products %}
+    <div class="col-md-4 mb-4">
+        <div class="card h-100">
+            <img src="{{ product.image }}" class="card-img-top" alt="{{ product.name }}"
+                style="height: 200px; object-fit: cover;">
+            <div class="card-body d-flex flex-column">
+                <h5 class="card-title">{{ product.name }}</h5>
+                <p class="card-text flex-grow-1">
+                    {{ product.description|truncatechars:100 }}
+                </p>
+                <div class="mt-auto">
+                    <div class="d-flex justify-content-between align-items-center mb-2">
+                        <span class="h5 text-primary">
+                            {{ product.price }} ₽
+                        </span>
+                        {% if user.is_authenticated %}
+                        <form method="post" action="{% url 'add_to_cart' product.id %}" class="d-inline">
+                            {% csrf_token %}
+                            <button type="submit" class="btn btn-outline-primary btn-sm">
+                                В корзину
+                            </button>
+                        </form>
+                        {% else %}
+                        <a href="{% url 'login' %}" class="btn btn-outline-secondary btn-sm">
+                            Войти чтобы купить
+                        </a>
+                        {% endif %}
+                    </div>
+                    <div class="d-flex justify-content-between">
+                        <small class="text-muted">
+                            Категория: {{ product.category_name }}
+                        </small>
+                        <small class="{{ product.in_stock|yesno:'text-success,text-danger' }}">
+                            {{ product.in_stock|yesno:'✓ В наличии,✗ Нет в наличии' }}
+                        </small>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    {% endfor %}
+</div>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        fetch('/api/products/')
+            .then(response => response.json())
+            .then(products => {
+                console.log('Товары загружены:', products);
+            });
+    });
+</script>

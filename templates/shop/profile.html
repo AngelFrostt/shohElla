@@ -1,0 +1,354 @@
+{% extends 'shop/base.html' %}
+
+{% block title %}Личный кабинет{% endblock %}
+
+{% block content %}
+<div class="profile-page">
+    <div class="row mb-4">
+        <div class="col-md-8">
+            <h1>Личный кабинет</h1>
+            <p class="text-muted">Добро пожаловать,
+                {% if user.first_name and user.last_name %}
+                {{ user.first_name }} {{ user.last_name }}!
+                {% else %}
+                {{ user.username }}!
+                {% endif %}
+            </p>
+        </div>
+        <div class="col-md-4 text-end">
+            <div class="card bg-light">
+                <div class="card-body py-2">
+                    <small class="text-muted">Зарегистрирован:</small>
+                    <div>{{ user.date_joined|date:"d.m.Y" }}</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-md-3">
+            <div class="card">
+                <div class="card-body">
+                    <div class="d-flex align-items-center mb-3">
+                        <div class="rounded-circle bg-primary text-white d-flex align-items-center justify-content-center"
+                            style="width: 50px; height: 50px;">
+                            <span style="font-size: 20px;" id="user-avatar">
+                                {% if user.first_name or user.last_name %}
+                                {{ user.first_name|first|upper }}{{ user.last_name|first|upper }}
+                                {% else %}
+                                {{ user.username|first|upper }}
+                                {% endif %}
+                            </span>
+                        </div>
+                        <div class="ms-3">
+                            <strong id="user-fullname">
+                                {% if user.first_name and user.last_name %}
+                                {{ user.first_name }} {{ user.last_name }}
+                                {% else %}
+                                {{ user.username }}
+                                {% endif %}
+                            </strong>
+                            <div class="text-muted" id="user-email">{{ user.email }}</div>
+                        </div>
+                    </div>
+
+                    <hr>
+
+                    <div class="nav flex-column nav-pills">
+                        <a class="nav-link {% if active_tab == 'orders' %}active{% endif %}"
+                            href="{% url 'profile' %}?tab=orders">
+                            Мои заказы
+                        </a>
+                        <a class="nav-link {% if active_tab == 'profile' %}active{% endif %}"
+                            href="{% url 'profile' %}?tab=profile">
+                            Редактировать профиль
+                        </a>
+                        <a class="nav-link {% if active_tab == 'password' %}active{% endif %}"
+                            href="{% url 'profile' %}?tab=password">
+                            Сменить пароль
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-9">
+            {% if active_tab == 'orders' %}
+            <div class="card">
+                <div class="card-header bg-white">
+                    <h5 class="mb-0">История заказов</h5>
+                </div>
+                <div class="card-body">
+                    {% if orders %}
+                    <div class="table-responsive">
+                        <table class="table table-hover">
+                            <thead>
+                                <tr>
+                                    <th>Номер заказа</th>
+                                    <th>Дата</th>
+                                    <th>Сумма</th>
+                                    <th>Статус</th>
+                                    <th>Действия</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for order in orders %}
+                                <tr>
+                                    <td>
+                                        <strong>#{{ order.id }}</strong>
+                                    </td>
+                                    <td>{{ order.created_at|date:"d.m.Y H:i" }}</td>
+                                    <td>{{ order.total_price }} ₽</td>
+                                    <td>
+                                        {% if order.status == 'pending' %}
+                                        <span class="badge bg-warning">Ожидает оплаты</span>
+                                        {% elif order.status == 'paid' %}
+                                        <span class="badge bg-info">Оплачен</span>
+                                        {% elif order.status == 'shipped' %}
+                                        <span class="badge bg-primary">Отправлен</span>
+                                        {% elif order.status == 'delivered' %}
+                                        <span class="badge bg-success">Доставлен</span>
+                                        {% elif order.status == 'cancelled' %}
+                                        <span class="badge bg-danger">Отменен</span>
+                                        {% endif %}
+                                    </td>
+                                    <td>
+                                        <a href="{% url 'order_detail' order.id %}"
+                                            class="btn btn-sm btn-outline-primary">
+                                            Подробнее
+                                        </a>
+                                    </td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                    {% else %}
+                    <div class="text-center py-5">
+                        <h4>У вас еще нет заказов</h4>
+                        <p class="text-muted mb-4">Сделайте свой первый заказ!</p>
+                        <a href="{% url 'products' %}" class="btn btn-primary">
+                            Перейти к покупкам
+                        </a>
+                    </div>
+                    {% endif %}
+                </div>
+            </div>
+
+            {% elif active_tab == 'profile' %}
+            <div class="card">
+                <div class="card-header bg-white">
+                    <h5 class="mb-0">✏️ Редактирование профиля</h5>
+                </div>
+                <div class="card-body">
+                    <form method="post" action="{% url 'update_profile' %}" id="profile-form">
+                        {% csrf_token %}
+
+                        {% for message in messages %}
+                        {% if message.tags == 'success' or message.tags == 'error' %}
+                        <div class="alert alert-{{ message.tags }} alert-dismissible fade show">
+                            {{ message }}
+                            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                        </div>
+                        {% endif %}
+                        {% endfor %}
+
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <label class="form-label">Имя пользователя *</label>
+                                <input type="text" name="username"
+                                    value="{{ user_form.username.value|default:user.username }}"
+                                    class="form-control {% if user_form.username.errors %}is-invalid{% endif %}"
+                                    required>
+                                {% if user_form.username.errors %}
+                                <div class="invalid-feedback">
+                                    {% for error in user_form.username.errors %}
+                                    {{ error }}
+                                    {% endfor %}
+                                </div>
+                                {% endif %}
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <label class="form-label">Email *</label>
+                                <input type="email" name="email" value="{{ user_form.email.value|default:user.email }}"
+                                    class="form-control {% if user_form.email.errors %}is-invalid{% endif %}" required>
+                                {% if user_form.email.errors %}
+                                <div class="invalid-feedback">
+                                    {% for error in user_form.email.errors %}
+                                    {{ error }}
+                                    {% endfor %}
+                                </div>
+                                {% endif %}
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <label class="form-label">Имя *</label>
+                                <input type="text" name="first_name"
+                                    value="{{ user_form.first_name.value|default:user.first_name }}"
+                                    class="form-control {% if user_form.first_name.errors %}is-invalid{% endif %}">
+                                {% if user_form.first_name.errors %}
+                                <div class="invalid-feedback">
+                                    {% for error in user_form.first_name.errors %}
+                                    {{ error }}
+                                    {% endfor %}
+                                </div>
+                                {% endif %}
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <label class="form-label">Фамилия *</label>
+                                <input type="text" name="last_name"
+                                    value="{{ user_form.last_name.value|default:user.last_name }}"
+                                    class="form-control {% if user_form.last_name.errors %}is-invalid{% endif %}">
+                                {% if user_form.last_name.errors %}
+                                <div class="invalid-feedback">
+                                    {% for error in user_form.last_name.errors %}
+                                    {{ error }}
+                                    {% endfor %}
+                                </div>
+                                {% endif %}
+                            </div>
+                        </div>
+
+                        <div class="mt-4">
+                            <button type="submit" class="btn btn-primary" id="save-profile-btn">
+                                <span id="save-profile-text">Сохранить изменения</span>
+                                <span id="save-profile-spinner" class="spinner-border spinner-border-sm d-none"
+                                    role="status"></span>
+                            </button>
+                            <a href="{% url 'profile' %}?tab=orders" class="btn btn-outline-secondary">
+                                Отмена
+                            </a>
+                        </div>
+                    </form>
+                </div>
+            </div>
+
+            {% elif active_tab == 'password' %}
+            <div class="card">
+                <div class="card-header bg-white">
+                    <h5 class="mb-0">Смена пароля</h5>
+                </div>
+                <div class="card-body">
+                    <form method="post" action="{% url 'change_password' %}" id="password-form">
+                        {% csrf_token %}
+
+                        {% for message in messages %}
+                        {% if message.tags == 'success' or message.tags == 'error' %}
+                        <div class="alert alert-{{ message.tags }} alert-dismissible fade show">
+                            {{ message }}
+                            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                        </div>
+                        {% endif %}
+                        {% endfor %}
+
+                        <div class="mb-3">
+                            <label class="form-label">Текущий пароль *</label>
+                            <input type="password" name="old_password"
+                                class="form-control {% if password_form.old_password.errors %}is-invalid{% endif %}"
+                                required>
+                            {% if password_form.old_password.errors %}
+                            <div class="invalid-feedback">
+                                {% for error in password_form.old_password.errors %}
+                                {{ error }}
+                                {% endfor %}
+                            </div>
+                            {% endif %}
+                        </div>
+
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <label class="form-label">Новый пароль *</label>
+                                <input type="password" name="new_password1"
+                                    class="form-control {% if password_form.new_password1.errors %}is-invalid{% endif %}"
+                                    required>
+                                {% if password_form.new_password1.errors %}
+                                <div class="invalid-feedback">
+                                    {% for error in password_form.new_password1.errors %}
+                                    {{ error }}
+                                    {% endfor %}
+                                </div>
+                                {% endif %}
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <label class="form-label">Повторите новый пароль *</label>
+                                <input type="password" name="new_password2"
+                                    class="form-control {% if password_form.new_password2.errors %}is-invalid{% endif %}"
+                                    required>
+                                {% if password_form.new_password2.errors %}
+                                <div class="invalid-feedback">
+                                    {% for error in password_form.new_password2.errors %}
+                                    {{ error }}
+                                    {% endfor %}
+                                </div>
+                                {% endif %}
+                            </div>
+                        </div>
+
+                        <div class="mt-4">
+                            <button type="submit" class="btn btn-primary" id="change-password-btn">
+                                <span id="change-password-text">Сменить пароль</span>
+                                <span id="change-password-spinner" class="spinner-border spinner-border-sm d-none"
+                                    role="status"></span>
+                            </button>
+                            <a href="{% url 'profile' %}?tab=orders" class="btn btn-outline-secondary">
+                                Отмена
+                            </a>
+                        </div>
+                    </form>
+                </div>
+            </div>
+            {% endif %}
+        </div>
+    </div>
+</div>
+
+<style>
+    .nav-pills .nav-link {
+        color: #495057;
+        padding: 10px 15px;
+        margin-bottom: 5px;
+        border-radius: 5px;
+        transition: all 0.3s;
+    }
+
+    .nav-pills .nav-link:hover {
+        background-color: #f8f9fa;
+    }
+
+    .nav-pills .nav-link.active {
+        background-color: #0d6efd;
+        color: white;
+    }
+
+    .rounded-circle {
+        font-weight: bold;
+    }
+
+    .form-control {
+        transition: all 0.3s;
+    }
+
+    .form-control:focus {
+        border-color: #86b7fe;
+        box-shadow: 0 0 0 0.25rem rgba(13, 110, 253, 0.25);
+    }
+
+    .btn-primary {
+        transition: all 0.3s;
+    }
+
+    .btn-primary:disabled {
+        opacity: 0.7;
+        cursor: not-allowed;
+    }
+
+    .spinner-border {
+        vertical-align: middle;
+        margin-left: 5px;
+    }
+</style>
+
+
+{% endblock %}

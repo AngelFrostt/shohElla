@@ -1,0 +1,171 @@
+{% extends 'base.html' %}
+
+{% block title %}Корзина покупок{% endblock %}
+
+{% block content %}
+<div class="cart-page">
+    <h1 class="mb-4">🛒 Корзина покупок</h1>
+
+    {% if cart_items %}
+    <div class="table-responsive">
+        <table class="table table-hover">
+            <thead class="table-dark">
+                <tr>
+                    <th>Товар</th>
+                    <th>Цена</th>
+                    <th>Количество</th>
+                    <th>Сумма</th>
+                    <th>Действия</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for item in cart_items %}
+                <tr>
+                    <td>
+                        <div class="d-flex align-items-center">
+                            <img src="{{ item.product.image }}" alt="{{ item.product.name }}" class="me-3"
+                                style="width: 60px; height: 60px; object-fit: cover;">
+                            <div>
+                                <h6 class="mb-0">{{ item.product.name }}</h6>
+                                <small class="text-muted">{{ item.product.category_name }}</small>
+                            </div>
+                        </div>
+                    </td>
+                    <td class="align-middle">
+                        {{ item.product.price }} ₽
+                    </td>
+                    <td class="align-middle">
+                        <div class="d-flex align-items-center">
+                            <form method="post" action="{% url 'update_cart_item' item.id %}" class="d-inline">
+                                {% csrf_token %}
+                                <input type="hidden" name="action" value="decrease">
+                                <button type="submit" class="btn btn-sm btn-outline-secondary">
+                                    -
+                                </button>
+                            </form>
+
+                            <span class="mx-2">{{ item.quantity }}</span>
+
+                            <form method="post" action="{% url 'update_cart_item' item.id %}" class="d-inline">
+                                {% csrf_token %}
+                                <input type="hidden" name="action" value="increase">
+                                <button type="submit" class="btn btn-sm btn-outline-secondary">
+                                    +
+                                </button>
+                            </form>
+                        </div>
+                    </td>
+                    <td class="align-middle">
+                        <strong>{{ item.total_price }} ₽</strong>
+                    </td>
+                    <td class="align-middle">
+                        <form method="post" action="{% url 'update_cart_item' item.id %}" class="d-inline">
+                            {% csrf_token %}
+                            <input type="hidden" name="action" value="delete">
+                            <button type="submit" class="btn btn-sm btn-danger">
+                                ✕ Удалить
+                            </button>
+                        </form>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+            <tfoot class="table-secondary">
+                <tr>
+                    <td colspan="3" class="text-end"><strong>Итого:</strong></td>
+                    <td colspan="2">
+                        <h4 class="mb-0 text-primary">{{ total }} ₽</h4>
+                    </td>
+                </tr>
+            </tfoot>
+        </table>
+    </div>
+
+    <div class="row mt-4">
+        <div class="col-md-6">
+            <a href="/" class="btn btn-outline-secondary">
+                ← Продолжить покупки
+            </a>
+        </div>
+        <div class="col-md-6 text-end">
+            <form method="post" action="{% url 'clear_cart' %}" class="d-inline me-2">
+                {% csrf_token %}
+                <button type="submit" class="btn btn-danger">
+                    Очистить корзину
+                </button>
+            </form>
+            <button class="btn btn-success btn-lg" data-bs-toggle="modal" data-bs-target="#checkoutModal">
+                Оформить заказ
+            </button>
+        </div>
+    </div>
+    {% else %}
+    <div class="text-center py-5">
+        <div class="display-1 mb-4">🛒</div>
+        <h3>Ваша корзина пуста</h3>
+        <p class="text-muted mb-4">Добавьте товары из каталога</p>
+        <a href="/" class="btn btn-primary btn-lg">
+            Перейти к покупкам
+        </a>
+    </div>
+    {% endif %}
+</div>
+
+{% if cart_items %}
+<div class="modal fade" id="checkoutModal" tabindex="-1">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Оформление заказа</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+                <p>Сумма заказа: <strong>{{ total }} ₽</strong></p>
+                <p>Товаров: {{ cart_items|length }} позиций</p>
+
+                <form method="post" action="#">
+                    {% csrf_token %}
+                    <div class="mb-3">
+                        <label for="address" class="form-label">Адрес доставки</label>
+                        <textarea class="form-control" id="address" rows="3" required></textarea>
+                    </div>
+                    <div class="mb-3">
+                        <label for="phone" class="form-label">Телефон</label>
+                        <input type="tel" class="form-control" id="phone" required>
+                    </div>
+                    <div class="form-check mb-3">
+                        <input class="form-check-input" type="checkbox" id="agree" required>
+                        <label class="form-check-label" for="agree">
+                            Я согласен с условиями доставки и оплаты
+                        </label>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Отмена</button>
+                <button type="button" class="btn btn-success">Подтвердить заказ</button>
+            </div>
+        </div>
+    </div>
+</div>
+{% endif %}
+
+<style>
+    .cart-page {
+        min-height: 60vh;
+    }
+
+    .table img {
+        border-radius: 5px;
+    }
+
+    .btn-sm {
+        width: 30px;
+        height: 30px;
+        padding: 0;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+    }
+</style>
+{% endblock %}

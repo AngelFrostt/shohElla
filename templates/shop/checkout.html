@@ -1,0 +1,199 @@
+{% extends 'shop/base.html' %}
+
+{% block title %}Оформление заказа{% endblock %}
+
+{% block content %}
+<div class="checkout-page">
+    <h1 class="mb-4">Оформление заказа</h1>
+
+    {% if messages %}
+    {% for message in messages %}
+    <div class="alert alert-{{ message.tags }} alert-dismissible fade show">
+        {{ message }}
+        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+    </div>
+    {% endfor %}
+    {% endif %}
+
+    <div class="row">
+        <div class="col-lg-8">
+            <div class="card mb-4">
+                <div class="card-header bg-white">
+                    <h5 class="mb-0">Данные для доставки</h5>
+                </div>
+                <div class="card-body">
+                    <form method="post">
+                        {% csrf_token %}
+
+                        <div class="mb-4">
+                            <label class="form-label">Контактная информация</label>
+                            <div class="card bg-light">
+                                <div class="card-body">
+                                    <p class="mb-1">
+                                        <strong>
+                                            {% if user.first_name and user.last_name %}
+                                            {{ user.first_name }} {{ user.last_name }}
+                                            {% else %}
+                                            {{ user.username }}
+                                            {% endif %}
+                                        </strong>
+                                    </p>
+                                    <p class="mb-1">{{ user.email }}</p>
+                                    <p class="mb-0">Имя пользователя: {{ user.username }}</p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="shipping_address" class="form-label">Адрес доставки *</label>
+                            <textarea name="shipping_address" id="shipping_address" class="form-control" rows="4"
+                                placeholder="Укажите полный адрес доставки" required></textarea>
+                            <div class="form-text">Укажите город, улицу, дом, квартиру, индекс</div>
+                        </div>
+
+                        <div class="mb-4">
+                            <label for="comment" class="form-label">Комментарий к заказу (необязательно)</label>
+                            <textarea name="comment" id="comment" class="form-control" rows="3"
+                                placeholder="Дополнительная информация для курьера или магазина"></textarea>
+                        </div>
+
+                        <button type="submit" class="btn btn-success btn-lg w-100">
+                            Подтвердить заказ
+                        </button>
+                    </form>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-lg-4">
+            <div class="card sticky-top" style="top: 90px;">
+                <div class="card-header bg-white">
+                    <h5 class="mb-0">Ваш заказ</h5>
+                </div>
+                <div class="card-body">
+                    <div class="order-summary">
+                        {% for item in cart_items %}
+                        <div class="d-flex mb-3">
+                            {% if item.product.image %}
+                            <img src="{{ item.product.image.url }}" alt="{{ item.product.name }}"
+                                style="width: 60px; height: 60px; object-fit: cover; border-radius: 4px;">
+                            {% else %}
+                            <div class="bg-secondary d-flex align-items-center justify-content-center me-3"
+                                style="width: 60px; height: 60px; border-radius: 4px;">
+
+                            </div>
+                            {% endif %}
+                            <div class="ms-3 flex-grow-1">
+                                <h6 class="mb-0">{{ item.product.name }}</h6>
+                                <small class="text-muted">
+                                    {% if item.product.category %}
+                                    {{ item.product.category.name }}
+                                    {% endif %}
+                                </small>
+                                <div class="text-muted">{{ item.quantity }} × {{ item.product.price }} ₽</div>
+                            </div>
+                            <div class="text-end">
+                                <strong>{{ item.product.price|floatformat:2 }} ₽</strong>
+                            </div>
+                        </div>
+                        {% endfor %}
+
+                        <hr>
+
+                        <div class="d-flex justify-content-between mb-2">
+                            <span>Товары ({{ cart_items|length }})</span>
+                            <span class="fw-bold">{{ total|floatformat:2 }} ₽</span>
+                        </div>
+                        <div class="d-flex justify-content-between mb-3">
+                            <span>Доставка</span>
+                            <span class="text-success fw-bold">Бесплатно</span>
+                        </div>
+
+                        <hr>
+
+                        <div class="d-flex justify-content-between mb-4">
+                            <strong class="fs-5">Итого</strong>
+                            <strong class="text-primary fs-4">{{ total|floatformat:2 }} ₽</strong>
+                        </div>
+
+                        <div class="text-center">
+                            <a href="{% url 'cart' %}" class="btn btn-outline-secondary w-100 mb-2">
+                                ← Вернуться в корзину
+                            </a>
+                            <a href="{% url 'products' %}" class="btn btn-outline-primary w-100">
+                                Продолжить покупки
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+    .checkout-page .card {
+        border: 1px solid #dee2e6;
+        border-radius: 10px;
+    }
+
+    .checkout-page .card-header {
+        background-color: #f8f9fa;
+        border-bottom: 1px solid #dee2e6;
+        padding: 1rem 1.25rem;
+    }
+
+    .checkout-page .card-body {
+        padding: 1.5rem;
+    }
+
+    .order-summary {
+        max-height: 500px;
+        overflow-y: auto;
+        padding-right: 5px;
+    }
+
+    .order-summary::-webkit-scrollbar {
+        width: 5px;
+    }
+
+    .order-summary::-webkit-scrollbar-track {
+        background: #f1f1f1;
+        border-radius: 10px;
+    }
+
+    .order-summary::-webkit-scrollbar-thumb {
+        background: #888;
+        border-radius: 10px;
+    }
+
+    .order-summary::-webkit-scrollbar-thumb:hover {
+        background: #555;
+    }
+
+    .form-control:focus {
+        border-color: #86b7fe;
+        box-shadow: 0 0 0 0.25rem rgba(13, 110, 253, 0.25);
+    }
+
+    textarea.form-control {
+        resize: vertical;
+        min-height: 100px;
+    }
+
+    .btn-success {
+        background-color: #198754;
+        border-color: #198754;
+        padding: 12px 24px;
+        font-weight: 600;
+        transition: all 0.3s;
+    }
+
+    .btn-success:hover {
+        background-color: #157347;
+        border-color: #146c43;
+        transform: translateY(-2px);
+        box-shadow: 0 4px 8px rgba(25, 135, 84, 0.2);
+    }
+</style>
+{% endblock %}

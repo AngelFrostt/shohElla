@@ -1,0 +1,193 @@
+{% extends 'shop/base.html' %}
+
+{% block title %}Контакты - WaveStore{% endblock %}
+
+{% block content %}
+<div class="contacts-page">
+    <div class="text-center mb-5">
+        <h1 class="display-4" style="color: #276254;">Контакты WaveStore</h1>
+        <p class="lead">Официальный магазин мерча Stray Kids</p>
+    </div>
+
+    <div class="row">
+        <div class="col-lg-8 mx-auto">
+            <div class="card mb-4 border-0 shadow-lg">
+                <div class="card-body">
+                    <h3 class="mb-4" style="color: #276254;">Контактная информация</h3>
+
+                    <div class="row">
+                        <div class="col-md-6 mb-4">
+                            <div class="d-flex align-items-start">
+                                <div class="me-3" style="color: #14a08c; font-weight: bold; font-size: 1.5rem;">→</div>
+                                <div>
+                                    <h5 style="color: #276254;">Поддержка STAY</h5>
+                                    <p>По вопросам заказов, размера и состава мерча:<br>
+                                        <strong>support@wavestore.ru</strong>
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="col-md-6 mb-4">
+                            <div class="d-flex align-items-start">
+                                <div class="me-3" style="color: #14a08c; font-weight: bold; font-size: 1.5rem;">→</div>
+                                <div>
+                                    <h5 style="color: #276254;">Сотрудничество</h5>
+                                    <p>Для организаций и мероприятий:<br>
+                                        <strong>partners@wavestore.ru</strong>
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="col-md-6 mb-4">
+                            <div class="d-flex align-items-start">
+                                <div class="me-3" style="color: #14a08c; font-weight: bold; font-size: 1.5rem;">→</div>
+                                <div>
+                                    <h5 style="color: #276254;">Время ответа</h5>
+                                    <p>Пн-Пт: 10:00-19:00 (по МСК)<br>
+                                        Суббота: 11:00-16:00</p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="col-md-6 mb-4">
+                            <div class="d-flex align-items-start">
+                                <div class="me-3" style="color: #14a08c; font-weight: bold; font-size: 1.5rem;">→</div>
+                                <div>
+                                    <h5 style="color: #276254;">Социальные сети</h5>
+                                    <p>Instagram: @wavestore_skz<br>
+                                        VK: vk.com/wavestore_skz</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="mt-4 pt-4 border-top">
+                        <h5 style="color: #276254;">Важная информация</h5>
+                        <div class="alert alert-info">
+                            <p class="mb-2"><strong>Все товары являются официальным мерчем от JYP
+                                    Entertainment.</strong></p>
+                            <p class="mb-0">Доставка осуществляется по всей России. Сроки и стоимость доставки
+                                рассчитываются при оформлении заказа.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="card border-0 shadow-lg">
+                <div class="card-body">
+                    <h3 class="mb-4" style="color: #276254;">Форма обратной связи</h3>
+                    <p class="mb-4">Есть вопросы по мерчу Stray Kids? Заполните форму ниже, и наша команда ответит вам в
+                        течение 24 часов.</p>
+
+                    <form method="post">
+                        {% csrf_token %}
+
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <label for="name" class="form-label">Ваше имя *</label>
+                                <input type="text" class="form-control" id="name" name="name" required
+                                    placeholder="Как к вам обращаться?">
+                            </div>
+
+                            <div class="col-md-6 mb-3">
+                                <label for="email" class="form-label">Email *</label>
+                                <input type="email" class="form-control" id="email" name="email" required
+                                    placeholder="example@email.com">
+                            </div>
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="subject" class="form-label">Тема обращения</label>
+                            <select class="form-select" id="subject" name="subject">
+                                <option value="order">Вопрос по заказу</option>
+                                <option value="size">Подбор размера</option>
+                                <option value="product">Вопрос о товаре</option>
+                                <option value="delivery">Доставка и оплата</option>
+                                <option value="other">Другое</option>
+                            </select>
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="order_number" class="form-label">Номер заказа (если есть)</label>
+                            <input type="text" class="form-control" id="order_number" name="order_number"
+                                placeholder="WS-XXXXXX">
+                        </div>
+
+                        <div class="mb-4">
+                            <label for="message" class="form-label">Сообщение *</label>
+                            <textarea class="form-control" id="message" name="message" rows="5" required
+                                placeholder="Опишите ваш вопрос подробнее..."></textarea>
+                            <div class="form-text">Пожалуйста, укажите интересующий вас товар или коллекцию Stray Kids
+                            </div>
+                        </div>
+
+                        <div class="d-grid">
+                            <button type="submit" class="btn btn-primary btn-lg"
+                                style="background: #14a08c; border-color: #14a08c;">
+                                Отправить вопрос
+                            </button>
+                        </div>
+
+                        <p class="text-muted text-center mt-3">
+                            Нажимая кнопку, вы соглашаетесь с обработкой персональных данных
+                        </p>
+                    </form>
+                </div>
+            </div>
+
+            <div class="card mt-4 border-0 shadow-lg">
+                <div class="card-body">
+                    <h4 class="mb-3" style="color: #276254;">Частые вопросы</h4>
+                    <div class="accordion" id="faqAccordion">
+                        <div class="accordion-item">
+                            <h2 class="accordion-header">
+                                <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
+                                    data-bs-target="#faq1">
+                                    Как определить размер мерча?
+                                </button>
+                            </h2>
+                            <div id="faq1" class="accordion-collapse collapse" data-bs-parent="#faqAccordion">
+                                <div class="accordion-body">
+                                    К каждому товару прилагается таблица размеров. Рекомендуем измерить свою одежду и
+                                    сравнить с указанными параметрами. Для азиатских размеров обычно выбирают на размер
+                                    больше.
+                                </div>
+                            </div>
+                        </div>
+                        <div class="accordion-item">
+                            <h2 class="accordion-header">
+                                <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
+                                    data-bs-target="#faq2">
+                                    Откуда доставляется мерч?
+                                </button>
+                            </h2>
+                            <div id="faq2" class="accordion-collapse collapse" data-bs-parent="#faqAccordion">
+                                <div class="accordion-body">
+                                    Весь мерч доставляется с официального склада в Москве. Мы работаем напрямую с
+                                    поставщиками JYP Entertainment.
+                                </div>
+                            </div>
+                        </div>
+                        <div class="accordion-item">
+                            <h2 class="accordion-header">
+                                <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
+                                    data-bs-target="#faq3">
+                                    Как отследить заказ?
+                                </button>
+                            </h2>
+                            <div id="faq3" class="accordion-collapse collapse" data-bs-parent="#faqAccordion">
+                                <div class="accordion-body">
+                                    После отправки заказа вы получите трек-номер на email. Отследить отправление можно
+                                    на сайте транспортной компании.
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

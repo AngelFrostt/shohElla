@@ -1,0 +1,591 @@
+:root {
+    --primary-color: #317670;
+    --primary-light: #48bba6;
+    --primary-dark: #276254;
+    --secondary-color: #b7f2e4;
+    --accent-color: #14a08c;
+    --text-color: #333333;
+    --text-light: #ffffff;
+    --card-bg: rgba(255, 255, 255, 0.92);
+    --shadow-color: rgba(49, 118, 104, 0.15);
+    --border-radius-lg: 20px;
+    --border-radius-md: 15px;
+    --border-radius-sm: 12px;
+    --gradient-primary: linear-gradient(135deg, var(--primary-color), var(--primary-light));
+    --gradient-dark: linear-gradient(135deg, var(--primary-dark), var(--primary-color));
+}
+
+
+.bg-info {
+    background-color: var(--primary-color) !important;
+    background: var(--gradient-primary) !important;
+    color: white !important;
+}
+
+.bg-primary {
+    background-color: var(--primary-dark) !important;
+}
+
+.bg-success {
+    background-color: var(--primary-color) !important;
+}
+
+.bg-warning {
+    background-color: #ffc107 !important;
+}
+
+.bg-danger {
+    background-color: #dc3545 !important;
+}
+
+.text-info {
+    color: var(--primary-color) !important;
+}
+
+.text-primary {
+    color: var(--primary-dark) !important;
+}
+
+.btn-primary {
+    color: #ffffff;
+    border-color: #08400d;
+    background: #14a08c;
+    font-weight: 500;
+}
+
+.btn-primary:hover {
+    color: #fff;
+    background-color: #d4c110;
+    border-color: #07aa4b;
+}
+
+
+.btn-outline-primary {
+    color: #fff;
+    background-color: #14a08c;
+    border-color: #14a08c;
+}
+
+.btn-outline-primary:hover {
+    color: #fff;
+    background-color: #096355;
+    border-color: #14a08c;
+}
+
+
+.row mt-5 {
+    background: #096355;
+}
+
+.simple-artist-card {
+    display: flex;
+    background: white;
+    border-radius: 20px;
+    overflow: hidden;
+    box-shadow: 0 10px 30px var(--shadow-color);
+    flex-wrap: wrap;
+}
+
+.simple-artist-image {
+    flex: 0 0 300px;
+    max-width: 300px;
+}
+
+.simple-artist-image img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.simple-artist-info {
+    flex: 1;
+    padding: 30px;
+    min-width: 300px;
+}
+
+.simple-artist-name {
+    color: var(--primary-dark);
+    font-size: 2rem;
+    font-weight: 900;
+    margin-bottom: 5px;
+}
+
+.simple-artist-korean {
+    color: var(--primary-color);
+    font-size: 1.2rem;
+    font-weight: 600;
+    margin-bottom: 5px;
+}
+
+.simple-artist-company {
+    color: var(--text-color);
+    opacity: 0.8;
+    margin-bottom: 20px;
+    font-size: 0.95rem;
+}
+
+.simple-artist-description {
+    color: var(--text-color);
+    line-height: 1.6;
+}
+
+.simple-artist-description p {
+    margin-bottom: 10px;
+}
+
+.simple-artist-description strong {
+    color: var(--primary-dark);
+}
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    line-height: 1.6;
+    color: var(--text-color);
+    background-color: #CCFEEF;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    padding-top: 70px;
+}
+
+.container {
+    width: 100%;
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 20px;
+}
+
+.navbar {
+    background: var(--gradient-dark);
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+    padding: 15px 0;
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    z-index: 1000;
+}
+
+.navbar-brand {
+    font-size: 1.4rem;
+    font-weight: bold;
+    color: var(--text-light) !important;
+    text-decoration: none;
+}
+
+.nav-link {
+    color: rgba(0, 0, 0, 0.9) !important;
+    font-weight: 500;
+    padding: 8px 16px !important;
+    border-radius: 8px;
+    transition: all 0.3s ease;
+}
+
+.nav-link:hover {
+    color: white !important;
+    background: rgba(255, 255, 255, 0.15);
+    transform: translateY(-1px);
+}
+
+.nav-link:active {
+    color: white !important;
+    background: rgba(83, 11, 11, 0.15);
+    transform: translateY(-1px);
+}
+
+
+.nav-pills .nav-link.active {
+    background-color: #087a11;
+    color: white;
+}
+
+main.container {
+    background: transparent;
+    padding: 30px 0;
+    margin: 0 auto 40px;
+    flex: 1;
+}
+
+.card {
+    background: var(--card-bg);
+    backdrop-filter: blur(10px);
+    border-radius: var(--border-radius-lg);
+    border: 1px solid rgba(255, 255, 255, 0.8);
+    box-shadow: 0 8px 32px var(--shadow-color);
+    overflow: hidden;
+    margin-bottom: 25px;
+    transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    position: relative;
+}
+
+.card::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 5px;
+    background: var(--gradient-primary);
+    border-radius: var(--border-radius-lg) var(--border-radius-lg) 0 0;
+}
+
+.card:hover {
+    transform: translateY(-8px) scale(1.02);
+    box-shadow: 0 20px 40px rgba(49, 118, 104, 0.25);
+    border-color: var(--primary-light);
+}
+
+.card.accent-card {
+    background: linear-gradient(145deg,
+            rgba(255, 255, 255, 0.95) 0%,
+            rgba(183, 242, 228, 0.3) 100%);
+    border: 2px solid var(--primary-color);
+}
+
+.card-header {
+    background: var(--gradient-primary);
+    color: var(--text-light);
+    padding: 20px 25px;
+    border-radius: var(--border-radius-lg) var(--border-radius-lg) 0 0 !important;
+    border-bottom: 3px solid rgba(255, 255, 255, 0.2);
+    position: relative;
+    overflow: hidden;
+}
+
+.card-header::after {
+    content: '';
+    position: absolute;
+    top: -50%;
+    left: -50%;
+    width: 200%;
+    height: 200%;
+    background: linear-gradient(to bottom right,
+            rgba(255, 255, 255, 0.1) 0%,
+            transparent 50%,
+            rgba(255, 255, 255, 0.05) 100%);
+    transform: rotate(30deg);
+    transition: transform 0.5s ease;
+}
+
+.card-header:hover::after {
+    transform: rotate(30deg) translateX(100px);
+}
+
+.card-body {
+    padding: 25px;
+    background: transparent;
+}
+
+.shadow-lg {
+    box-shadow: 0 15px 35px rgba(49, 118, 104, 0.2) !important;
+}
+
+.border-0 {
+    border: 2px solid transparent !important;
+    background: linear-gradient(var(--card-bg), var(--card-bg)) padding-box,
+        var(--gradient-primary) border-box;
+    background-clip: padding-box, border-box;
+}
+
+.product-card {
+    border-radius: var(--border-radius-lg);
+    border: 2px solid var(--secondary-color);
+    background: white;
+    transition: all 0.4s ease;
+    overflow: hidden;
+    position: relative;
+}
+
+.product-card::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: linear-gradient(45deg, transparent 40%, rgba(183, 242, 228, 0.1) 100%);
+    pointer-events: none;
+}
+
+.product-card:hover {
+    transform: translateY(-10px) rotate(1deg);
+    box-shadow: 0 25px 50px rgba(49, 118, 104, 0.3);
+    border-color: var(--primary-light);
+}
+
+.product-card .product-img {
+    width: 100%;
+    height: 300px;
+    object-fit: cover;
+    transition: transform 0.6s ease;
+    border-radius: var(--border-radius-md) var(--border-radius-md) 0 0;
+}
+
+.product-card:hover .product-img {
+    transform: scale(1.05);
+}
+
+.product-card .card-body {
+    padding: 20px;
+    background: white;
+    position: relative;
+    z-index: 1;
+}
+
+.product-card .card-title {
+    color: var(--primary-dark);
+    font-size: 1.2rem;
+    font-weight: 700;
+    margin-bottom: 10px;
+    min-height: 50px;
+}
+
+.product-card .card-text {
+    color: var(--text-color);
+    font-size: 0.95rem;
+    line-height: 1.5;
+    opacity: 0.8;
+    margin-bottom: 15px;
+}
+
+.product-card .price {
+    color: var(--primary-color);
+    font-size: 1.5rem;
+    font-weight: 800;
+    text-align: center;
+    margin: 15px 0;
+    padding: 10px;
+    background: linear-gradient(90deg,
+            rgba(183, 242, 228, 0.2) 0%,
+            rgba(183, 242, 228, 0.4) 100%);
+    border-radius: var(--border-radius-sm);
+}
+
+.product-card .btn-add-to-cart {
+    width: 100%;
+    background: var(--gradient-primary);
+    color: white;
+    border: none;
+    padding: 12px;
+    border-radius: var(--border-radius-sm);
+    font-weight: 700;
+    font-size: 1rem;
+    transition: all 0.3s ease;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    position: relative;
+    overflow: hidden;
+}
+
+.product-card .btn-add-to-cart::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg,
+            transparent 0%,
+            rgba(255, 255, 255, 0.3) 50%,
+            transparent 100%);
+    transition: left 0.6s ease;
+}
+
+.product-card .btn-add-to-cart:hover {
+    background: var(--gradient-dark);
+    transform: translateY(-2px);
+    box-shadow: 0 8px 20px rgba(49, 118, 104, 0.4);
+}
+
+.product-card .btn-add-to-cart:hover::before {
+    left: 100%;
+}
+
+.card.transparent {
+    background: rgba(255, 255, 255, 0.7);
+    backdrop-filter: blur(15px);
+    border: 1px solid rgba(255, 255, 255, 0.5);
+}
+
+.card.gradient-border {
+    border: 3px solid transparent;
+    background: linear-gradient(var(--card-bg), var(--card-bg)) padding-box,
+        var(--gradient-primary) border-box;
+    background-clip: padding-box, border-box;
+}
+
+.profile-card {
+    max-width: 350px;
+    margin: 0 auto;
+    text-align: center;
+    border-radius: var(--border-radius-lg);
+    border: 3px solid var(--primary-color);
+    background: linear-gradient(145deg,
+            rgba(255, 255, 255, 0.95) 0%,
+            rgba(204, 254, 239, 0.3) 100%);
+    overflow: hidden;
+}
+
+.profile-card .profile-avatar {
+    width: 100px;
+    height: 100px;
+    border-radius: 50%;
+    border: 4px solid var(--primary-color);
+    margin: -50px auto 20px;
+    background: white;
+    overflow: hidden;
+    box-shadow: 0 10px 25px var(--shadow-color);
+    position: relative;
+    z-index: 2;
+}
+
+.profile-card .profile-avatar img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.card-hover-effect {
+    transition: all 0.3s ease;
+}
+
+.card-hover-effect:hover {
+    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.15);
+    border-color: var(--primary-color);
+}
+.card {
+    animation: fadeInUp 0.6s ease-out;
+}
+
+.wave-effect {
+    position: relative;
+    overflow: hidden;
+}
+
+.wave-effect::after {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 5px;
+    height: 5px;
+    background: rgba(255, 255, 255, 0.5);
+    opacity: 0;
+    border-radius: 100%;
+    transform: scale(1, 1) translate(-50%);
+    transform-origin: 50% 50%;
+}
+
+.wave-effect:focus:not(:active)::after {
+    animation: ripple 1s ease-out;
+}
+.mb-3 {
+    color: var(--primary-dark);
+    font-weight: 600;
+}
+
+.product-img {
+    height: 200px;
+    object-fit: cover;
+    border-radius: var(--border-radius-sm);
+}
+
+.footer {
+    margin-top: 50px;
+    padding: 20px 0;
+    background-color: #317668;
+    color: white;
+}
+
+.form-control:focus {
+    border-color: var(--primary-light);
+    box-shadow: 0 0 0 0.25rem rgba(49, 118, 104, 0.25);
+}
+
+.glass-card {
+    background: rgba(255, 255, 255, 0.25);
+    backdrop-filter: blur(20px);
+    border: 1px solid rgba(255, 255, 255, 0.3);
+    box-shadow: 0 8px 32px rgba(31, 38, 135, 0.1);
+}
+
+@media (max-width: 768px) {
+    .card {
+        border-radius: var(--border-radius-md);
+        margin-bottom: 20px;
+    }
+
+    .card-header {
+        padding: 15px 20px;
+    }
+
+    .card-body {
+        padding: 20px;
+    }
+
+    .product-card .product-img {
+        height: 180px;
+    }
+
+    .product-card .card-title {
+        font-size: 1.1rem;
+        min-height: auto;
+    }
+
+    .product-card .price {
+        font-size: 1.3rem;
+    }
+}
+
+@media (max-width: 576px) {
+    .card {
+        border-radius: var(--border-radius-sm);
+        margin-bottom: 15px;
+    }
+
+    .card-header {
+        padding: 12px 15px;
+    }
+
+    .card-body {
+        padding: 15px;
+    }
+
+    body {
+        padding-top: 60px;
+    }
+}
+
+
+@keyframes fadeInUp {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+
+@keyframes ripple {
+    0% {
+        transform: scale(0, 0);
+        opacity: 0.5;
+    }
+
+    100% {
+        transform: scale(40, 40);
+        opacity: 0;
+    }
+}

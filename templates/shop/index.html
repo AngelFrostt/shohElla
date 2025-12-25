@@ -1,0 +1,165 @@
+{% extends 'shop/base.html' %}
+{% load static %}
+
+{% block title %}Официальный мерч Stray Kids - WaveStore{% endblock %}
+
+{% block content %}
+<div class="hero-section text-center py-5 mb-5 bg-light rounded"
+    style="background: linear-gradient(135deg, #317670 0%, #48bba6 50%, #b7f2e4 100%); color: white;">
+    <h1 class="display-4 mb-3">Официальный мерч Stray Kids</h1>
+    <p class="lead mb-4">Эксклюзивная коллекция одежды и аксессуаров от JYP Entertainment</p>
+    <a href="{% url 'products' %}" class="btn btn-primary btn-lg"
+        style="background: #14a08c; border-color: #14a08c;">Перейти в каталог</a>
+</div>
+
+<div class="mb-5">
+    <h2 class="mb-4 text-center" style="color: #276254;">Коллекции</h2>
+    <div class="row">
+        <div class="col-md-4 mb-4">
+            <div class="card h-100 text-center border-0 shadow-lg">
+                <div class="card-body">
+                    <h5 class="card-title" style="color: #276254;">Одежда</h5>
+                    <p class="card-text">Футболки, худи, свитшоты с официальной символикой и дизайнами альбомов Stray
+                        Kids</p>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4 mb-4">
+            <div class="card h-100 text-center border-0 shadow-lg">
+                <div class="card-body">
+                    <h5 class="card-title" style="color: #276254;">Аксессуары</h5>
+                    <p class="card-text">Значки, световые палочки, маски и другие аксессуары с символикой группы</p>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4 mb-4">
+            <div class="card h-100 text-center border-0 shadow-lg">
+                <div class="card-body">
+                    <h5 class="card-title" style="color: #276254;">Альбомы</h5>
+                    <p class="card-text">Официальные альбомы Stray Kids со всеми включенными фотокарточками и бонусами
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row mt-5 mb-5">
+    <div class="col-md-12 mb-4">
+        <div class="simple-artist-card">
+            <div class="simple-artist-image">
+                <img src="{% static 'images/Rectangle 7.png' %}" class="artist-photo" alt="Stray Kids">
+            </div>
+            <div class="simple-artist-info">
+                <h2 class="simple-artist-name">Stray Kids</h2>
+                <p class="simple-artist-korean">스트레이 키즈</p>
+                <p class="simple-artist-company">JYP Entertainment</p>
+
+                <div class="simple-artist-description">
+                    <p>Мужская группа, дебютировавшая в 2018 году. Известны своими
+                        мощными выступлениями и самобытной музыкой.</p>
+                    <p><strong>Фандом:</strong> STAY</p>
+                    <p><strong>Девиз:</strong> "Step out of the comfort zone"</p>
+                    <p>Все товары в этом магазине являются официальным мерчем, лицензированным JYP Entertainment.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="mb-5">
+    <h2 class="mb-4 text-center" style="color: #276254;">Популярные товары</h2>
+
+    {% if latest_products %}
+    <div class="row">
+        {% for product in latest_products %}
+        <div class="col-md-4 mb-4">
+            <div class="card h-100 product-card">
+                {% if product.image %}
+                <img src="{{ product.image.url }}" class="card-img-top product-img" alt="{{ product.name }}">
+                {% else %}
+                <img src="https://via.placeholder.com/300x200/317670/ffffff?text=STRAY+KIDS"
+                    class="card-img-top product-img" alt="Stray Kids Merch">
+                {% endif %}
+
+                <div class="card-body d-flex flex-column">
+                    <h5 class="card-title" style="color: #276254;">{{ product.name }}</h5>
+                    <p class="card-text flex-grow-1">
+                        {{ product.description|truncatechars:100 }}
+                    </p>
+
+                    <div class="mt-auto">
+                        <div class="d-flex justify-content-between align-items-center mb-2">
+                            <span class="h5 text-primary">{{ product.price }} ₽</span>
+                            {% if user.is_authenticated %}
+                            <form action="{% url 'add_to_cart' product.id %}" method="post" class="d-inline">
+                                {% csrf_token %}
+                                <button type="submit" class="btn btn-outline-primary btn-sm">
+                                    В корзину
+                                </button>
+                            </form>
+                            {% else %}
+                            <a href="{% url 'login' %}" class="btn btn-outline-secondary btn-sm">
+                                Войти чтобы купить
+                            </a>
+                            {% endif %}
+                        </div>
+
+                        <div class="d-flex justify-content-between">
+                            <span class="badge bg-info">{{ product.category.name }}</span>
+                            {% if product.in_stock %}
+                            <span class="text-success">✓ В наличии</span>
+                            {% else %}
+                            <span class="text-danger">✗ Предзаказ</span>
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+
+    <div class="text-center mt-4">
+        <a href="{% url 'products' %}" class="btn btn-outline-secondary">
+            Смотреть весь каталог →
+        </a>
+    </div>
+    {% else %}
+    <div class="alert alert-info text-center">
+        <p class="mb-0">Скоро появятся новые товары. Следите за обновлениями!</p>
+    </div>
+    {% endif %}
+</div>
+
+<div class="row mb-5">
+    <div class="col-md-12">
+        <div class="card gradient-border">
+            <div class="card-body">
+                <h3 class="text-center mb-4" style="color: #276254;">Почему выбирают WaveStore?</h3>
+                <div class="row text-center">
+                    <div class="col-md-3 mb-3">
+                        <h5 style="color: #14a08c;">100% Оригинал</h5>
+                        <p>Только лицензированный мерч от JYP Entertainment</p>
+                    </div>
+                    <div class="col-md-3 mb-3">
+                        <h5 style="color: #14a08c;">Быстрая доставка</h5>
+                        <p>Отправка по всей России от 1 дня</p>
+                    </div>
+                    <div class="col-md-3 mb-3">
+                        <h5 style="color: #14a08c;">Гарантия качества</h5>
+                        <p>Все товары проверяются перед отправкой</p>
+                    </div>
+                    <div class="col-md-3 mb-3">
+                        <h5 style="color: #14a08c;">Поддержка STAY</h5>
+                        <p>Помощь в выборе и ответы на вопросы</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+{% endblock %}
